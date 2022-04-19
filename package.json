@@ -1,0 +1,64 @@
+{
+  "name": "node-typescript-template",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/evan361425/template-node-ts#readme",
+  "bugs": {
+    "url": "https://github.com/evan361425/template-node-ts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evan361425/template-node-ts.git"
+  },
+  "license": "SEE LICENSE IN LICENSE file",
+  "author": "Shueh Chou Lu <evanlu361425@gmail.com>",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist/**/*.js dist/**/*.ts",
+    "precompile": "npm run clean",
+    "compile": "tsc --project tsconfig.production.json",
+    "format": "prettier --write **/*.ts",
+    "test": "mocha",
+    "pretest-coverage": "npm run clean",
+    "test-coverage": "nyc --report-dir coverage --reporter html mocha",
+    "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
+    "all": "npm run format && npm run lint && npm test && npm run compile"
+  },
+  "nyc": {
+    "all": true,
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/chai": "^4",
+    "@types/mocha": "^9",
+    "@types/node": "^17",
+    "@typescript-eslint/eslint-plugin": "^5",
+    "@typescript-eslint/parser": "^5",
+    "chai": "^4",
+    "eslint": "^8",
+    "eslint-config-prettier": "^8",
+    "eslint-plugin-mocha": "^10",
+    "eslint-plugin-prettier": "^4",
+    "husky": "^7",
+    "mocha": "^9",
+    "nyc": "^15",
+    "prettier": "^2",
+    "source-map-support": "^0.5",
+    "ts-node": "^10",
+    "typescript": "^4"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
