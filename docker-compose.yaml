@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app:
+    image: node:14-alpine
+    ports:
+      - $APP_PORT:$APP_PORT
+    volumes:
+      - ./dist:/src/app/dist
+      - ./node_modules:/src/app/node_modules
+    command: node /src/app/dist/server.js -p $APP_PORT -c 5 -d 1000 --host $APP_HOST
+
+  lb:
+    image: nginx
+    ports:
+      - $LB_PORT:$LB_PORT
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    environment:
+      APP_PORT: ${APP_PORT}
+      LB_PORT: ${LB_PORT}
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx
+    depends_on:
+      - app
+
+  lb-exporter:
+    image: nginx/nginx-prometheus-exporter
+    ports:
+      - 9113:9113
+    depends_on:
+      - lb
+    command: -nginx.scrape-uri=http://lb:$LB_PORT/metrics

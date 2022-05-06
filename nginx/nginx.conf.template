@@ -1,0 +1,20 @@
+events {
+}
+
+http {
+  upstream my-app {
+    server app:${APP_PORT};
+  }
+
+  server {
+    listen ${LB_PORT} default_server;
+
+    location / {
+      proxy_pass http://my-app;
+    }
+
+    location /metrics {
+      stub_status on;
+    }
+  }
+}
