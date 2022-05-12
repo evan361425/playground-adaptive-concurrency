@@ -1,0 +1,68 @@
+version: '3'
+
+volumes:
+  elasticsearch_data: {}
+  kibana_data: {}
+  prometheus_data: {}
+  grafana_data: {}
+
+services:
+  # Metrics
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./config/prometheus.yaml/:/etc/prometheus/config.yaml
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/config.yaml"
+      - "--storage.tsdb.path=/prometheus"
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    user: "472"
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config/grafana/:/etc/grafana/provisioning/
+      - ./config/grafana.ini:/etc/grafana/grafana.ini
+      - grafana_data:/var/lib/grafana
+
+  # Logs
+  elasticsearch:
+    image: elasticsearch:7.17.3
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+  kibana:
+    image: kibana:7.17.3
+    volumes:
+      - kibana_data:/usr/share/kibana/data
+    depends_on:
+      - elasticsearch
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=admin
+      - ELASTICSEARCH_PASSWORD=evan361425
+    ports:
+      - 5601:5601
+  filebeat:
+    image: elastic/filebeat:7.17.3
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./log/nginx:/var/log/nginx
+      - ./config/filebeat.yaml:/usr/share/filebeat/filebeat.yml
+    command: ["--strict.perms=false"]
+
+networks:
+  default:
+    external:
+      name: app-network

@@ -4,7 +4,6 @@ import express from 'express';
 function parseArgs(): {
   host: string;
   port: number;
-  connections: number;
   duration: number;
   jitter: number;
 } {
@@ -20,11 +19,6 @@ function parseArgs(): {
     default: 8000,
     type: 'int',
     help: 'Server port',
-  });
-  parser.add_argument('-c', '--connections', {
-    default: 10,
-    type: 'int',
-    help: 'Maximum connections to use',
   });
   parser.add_argument('-d', '--duration', {
     default: 1000,
@@ -48,7 +42,7 @@ function wait(ms: number, jitter: number): Promise<void> {
 
 function main() {
   const args = parseArgs();
-  console.log(`Using configuration: \n${JSON.stringify(args, undefined, 2)}`);
+  console.log(JSON.stringify({ config: args }, undefined, 2));
 
   const app = express();
 
@@ -61,8 +55,7 @@ function main() {
     res.send('OK');
   });
 
-  const server = app.listen(args.port, args.host);
-  server.maxConnections = args.connections;
+  app.listen(args.port, args.host);
 }
 
 main();

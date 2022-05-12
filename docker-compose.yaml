@@ -8,14 +8,15 @@ services:
     volumes:
       - ./dist:/src/app/dist
       - ./node_modules:/src/app/node_modules
-    command: node /src/app/dist/server.js -p $APP_PORT -c 5 -d 1000 --host $APP_HOST
+    command: node /src/app/dist/server.js -p $APP_PORT -d 1000 --host $APP_HOST
 
   lb:
     image: nginx
     ports:
       - $LB_PORT:$LB_PORT
     volumes:
-      - ./nginx:/etc/nginx/templates
+      - ./config/nginx.conf.template:/etc/nginx/templates/nginx.conf.template
+      - ./log/nginx:/var/log/nginx
     environment:
       APP_PORT: ${APP_PORT}
       LB_PORT: ${LB_PORT}
@@ -29,4 +30,13 @@ services:
       - 9113:9113
     depends_on:
       - lb
-    command: -nginx.scrape-uri=http://lb:$LB_PORT/metrics
+    command:
+      - "-nginx.scrape-uri=http://lb:$LB_PORT/metrics"
+
+networks:
+  default:
+    name: app-network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.50.0/24

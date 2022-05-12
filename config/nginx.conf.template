@@ -1,0 +1,51 @@
+events {
+}
+
+http {
+  # keepalive_requests 0;
+
+  # limit_conn_zone $server_name zone=perserver:32m;
+
+  upstream my-app {
+    server app:${APP_PORT};
+  }
+
+  server {
+    listen ${LB_PORT} default_server;
+
+    location / {
+      # limit_conn perserver 40;
+      # limit_conn_status 429;
+      proxy_pass http://my-app;
+    }
+
+    location /metrics {
+      stub_status on;
+    }
+  }
+
+  map $upstream_response_time $my_res_time {
+    default   $upstream_response_time;
+    ""        "0";
+  }
+  map $upstream_connect_time $my_conn_time {
+    default   $upstream_connect_time;
+    ""        "0";
+  }
+  map $uri $loggable {
+    /metrics 0;
+    default 1;
+  }
+
+  log_format json_combined escape=json
+  '{"nginx":{'
+    '"timestamp":"$time_local",'
+    '"status":$status,'
+    '"request_time":$request_time,'
+    '"request_path":"$uri",'
+    '"response_time":$my_res_time,'
+    '"connect_time":$my_conn_time }'
+  '}';
+
+  access_log /var/log/nginx/access.log json_combined if=$loggable;
+}

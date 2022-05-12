@@ -1,0 +1,27 @@
+setup.template.name: "filebeat"
+setup.template.pattern: "filebeat"
+setup.kibana:
+  host: "kibana:5601"
+
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/*.log
+      - /var/log/app/*.log
+
+processors:
+  - decode_json_fields:
+      fields: ["message"]
+      max_depth: 3
+      target: "log"
+      add_error_key: true
+
+output.elasticsearch:
+  hosts: "elasticsearch:9200"
+  index: "log-%{+yyyy.MM.dd.HH}"
