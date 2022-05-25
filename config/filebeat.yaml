@@ -24,4 +24,11 @@ processors:
 
 output.elasticsearch:
   hosts: "elasticsearch:9200"
-  index: "log-%{+yyyy.MM.dd.HH}"
+  pipelines:
+    - pipeline: "filebeat_nginx"
+      when.has_fields:
+        - "log.nginx"
+    - pipeline: "filebeat_app"
+      when.has_fields:
+        - "log.app"
+  index: "filebeat-%{[agent.version]}"

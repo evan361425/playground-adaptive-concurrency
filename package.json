@@ -3,6 +3,7 @@
   "license": "SEE LICENSE IN LICENSE file",
   "author": "Shueh Chou Lu <evanlu361425@gmail.com>",
   "scripts": {
+    "dev": "tsc -w",
     "compile": "tsc",
     "preserve": "test -f dist/server.js || npm run compile",
     "serve": "node dist/server.js",
@@ -11,7 +12,8 @@
   "dependencies": {
     "argparse": "^2.0.1",
     "autocannon": "^7.9.0",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "queue": "^6.0.2"
   },
   "devDependencies": {
     "@types/argparse": "^2.0.10",

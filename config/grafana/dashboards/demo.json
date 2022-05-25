@@ -23,14 +23,14 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "links": [],
   "liveNow": false,
   "panels": [
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "type": "elasticsearch",
+        "uid": "P31C819B24CF3C3C7"
       },
       "fieldConfig": {
         "defaults": {
@@ -102,39 +102,85 @@
       },
       "targets": [
         {
+          "alias": "In Flight",
+          "bucketAggs": [
+            {
+              "field": "@timestamp",
+              "id": "2",
+              "settings": {
+                "interval": "1s"
+              },
+              "type": "date_histogram"
+            }
+          ],
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
           },
-          "editorMode": "code",
-          "expr": "nginx_connections_active",
-          "legendFormat": "Active",
-          "range": true,
-          "refId": "A"
+          "metrics": [
+            {
+              "field": "log.app.inflight",
+              "id": "1",
+              "type": "max"
+            }
+          ],
+          "query": "",
+          "refId": "A",
+          "timeField": "@timestamp"
         },
         {
+          "alias": "Pending",
+          "bucketAggs": [
+            {
+              "field": "@timestamp",
+              "id": "2",
+              "settings": {
+                "interval": "1s"
+              },
+              "type": "date_histogram"
+            }
+          ],
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
           },
-          "editorMode": "code",
-          "expr": "nginx_connections_waiting",
-          "hide": false,
-          "legendFormat": "Waiting",
-          "range": true,
-          "refId": "B"
+          "metrics": [
+            {
+              "field": "log.app.pending",
+              "id": "1",
+              "type": "max"
+            }
+          ],
+          "query": "",
+          "refId": "B",
+          "timeField": "@timestamp"
         },
         {
+          "alias": "Total",
+          "bucketAggs": [
+            {
+              "field": "@timestamp",
+              "id": "2",
+              "settings": {
+                "interval": "1s"
+              },
+              "type": "date_histogram"
+            }
+          ],
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
           },
-          "editorMode": "code",
-          "expr": "(rate(nginx_connections_accepted[10s]) - rate(nginx_connections_handled[10s])) / 10",
-          "hide": false,
-          "legendFormat": "Abort",
-          "range": true,
-          "refId": "C"
+          "metrics": [
+            {
+              "field": "log.app.total",
+              "id": "1",
+              "type": "max"
+            }
+          ],
+          "query": "",
+          "refId": "C",
+          "timeField": "@timestamp"
         }
       ],
       "title": "Server in-flight",
@@ -148,7 +194,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "fixed"
           },
           "custom": {
             "axisLabel": "",
@@ -186,15 +232,46 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "200"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "200 (10s)"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "499 (10s)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -233,7 +310,7 @@
               "field": "@timestamp",
               "id": "3",
               "settings": {
-                "interval": "2s",
+                "interval": "1s",
                 "min_doc_count": "0",
                 "timeZone": "utc",
                 "trimEdges": "0"
@@ -257,6 +334,7 @@
         }
       ],
       "title": "Server throughput",
+      "transformations": [],
       "type": "timeseries"
     },
     {
@@ -343,7 +421,7 @@
               "field": "@timestamp",
               "id": "2",
               "settings": {
-                "interval": "15s"
+                "interval": "1s"
               },
               "type": "date_histogram"
             }
@@ -369,7 +447,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 36,
   "style": "dark",
   "tags": [],
@@ -377,7 +455,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-2m",
     "to": "now"
   },
   "timepicker": {

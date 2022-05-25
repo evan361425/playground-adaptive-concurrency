@@ -8,7 +8,7 @@ services:
     volumes:
       - ./dist:/src/app/dist
       - ./node_modules:/src/app/node_modules
-    command: node /src/app/dist/server.js -p $APP_PORT -d 1000 --host $APP_HOST
+    command: node /src/app/dist/server.js -p $APP_PORT -d 1000 --host $APP_HOST --quit
 
   lb:
     image: nginx
@@ -24,14 +24,14 @@ services:
     depends_on:
       - app
 
-  lb-exporter:
-    image: nginx/nginx-prometheus-exporter
-    ports:
-      - 9113:9113
-    depends_on:
-      - lb
-    command:
-      - "-nginx.scrape-uri=http://lb:$LB_PORT/metrics"
+  # lb-exporter:
+  #   image: nginx/nginx-prometheus-exporter
+  #   ports:
+  #     - 9113:9113
+  #   depends_on:
+  #     - lb
+  #   command:
+  #     - "-nginx.scrape-uri=http://lb:$LB_PORT/metrics"
 
 networks:
   default:
