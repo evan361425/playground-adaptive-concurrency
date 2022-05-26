@@ -1,7 +1,7 @@
 setup.template.name: "filebeat"
 setup.template.pattern: "filebeat"
-setup.kibana:
-  host: "kibana:5601"
+# setup.kibana:
+#   host: "kibana:5601"
 
 filebeat.config:
   modules:

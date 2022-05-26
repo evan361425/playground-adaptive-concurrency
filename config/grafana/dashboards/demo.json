@@ -194,7 +194,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisLabel": "",
@@ -216,7 +216,7 @@
               "type": "linear"
             },
             "showPoints": "never",
-            "spanNulls": false,
+            "spanNulls": 15000,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -236,42 +236,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "200"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "200 (10s)"
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "499 (10s)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
@@ -293,7 +258,7 @@
       },
       "targets": [
         {
-          "alias": "",
+          "alias": "{{term log.nginx.status}}",
           "bucketAggs": [
             {
               "field": "log.nginx.status",
@@ -331,10 +296,79 @@
           "query": "",
           "refId": "A",
           "timeField": "@timestamp"
+        },
+        {
+          "alias": "{{term log.nginx.status}} (10s)",
+          "bucketAggs": [
+            {
+              "field": "log.nginx.status",
+              "id": "2",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "size": "10"
+              },
+              "type": "terms"
+            },
+            {
+              "field": "@timestamp",
+              "id": "3",
+              "settings": {
+                "interval": "10s",
+                "min_doc_count": "0",
+                "timeZone": "utc",
+                "trimEdges": "0"
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
+          },
+          "hide": false,
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "query": "",
+          "refId": "B",
+          "timeField": "@timestamp"
         }
       ],
       "title": "Server throughput",
-      "transformations": [],
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "200 (~10s)",
+            "binary": {
+              "left": "200 (10s)",
+              "operator": "/",
+              "reducer": "sum",
+              "right": "10"
+            },
+            "mode": "binary",
+            "reduce": {
+              "include": ["200 (10s)"],
+              "reducer": "mean"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "200 (10s)": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -447,7 +481,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
+  "refresh": "2s",
   "schemaVersion": 36,
   "style": "dark",
   "tags": [],

@@ -16,27 +16,27 @@ function parseArgs(): Args {
 
   parser.add_argument('--host', {
     default: 'localhost',
-    help: 'Server host',
+    help: 'Server host, default: localhost',
   });
   parser.add_argument('-p', '--port', {
     default: 8080,
     type: 'int',
-    help: 'Server port',
+    help: 'Server port, default: 8080',
   });
   parser.add_argument('-e', '--execute', {
     default: 1000,
     type: 'int',
-    help: 'How long(ms) will the request execute in server(not include pending)',
+    help: 'How long(ms) will the request execute in server, default: 1000',
   });
   parser.add_argument('-r', '--rate', {
     default: 10,
     type: 'int',
-    help: 'Requests per second rate',
+    help: 'Requests per second rate, default: 10',
   });
   parser.add_argument('-d', '--duration', {
     default: 15,
     type: 'int',
-    help: 'How many seconds you want to run, 0 means forever',
+    help: 'How many seconds you want to run, 0 means forever, default: 15',
   });
 
   return parser.parse_args();

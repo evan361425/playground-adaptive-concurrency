@@ -18,39 +18,40 @@ function parseArgs(): {
   });
 
   parser.add_argument('--host', {
-    default: 'localhost',
+    default: process.env.APP_HOST ?? 'localhost',
     help: 'Server host',
   });
   parser.add_argument('-p', '--port', {
-    default: 8000,
+    default: process.env.APP_PORT ?? 8000,
     type: 'int',
     help: 'Server port',
   });
   parser.add_argument('-f', '--inflight', {
-    default: 10,
+    default: process.env.APP_INFLIGHT ?? 10,
     type: 'int',
     help: 'Inflight requests limit',
   });
   parser.add_argument('-d', '--duration', {
-    default: 1000,
+    default: process.env.APP_DURATION ?? 1000,
     type: 'int',
     help: 'Each request duration in milliseconds',
   });
   parser.add_argument('-j', '--jitter', {
-    default: 50,
+    default: process.env.APP_JITTER ?? 50,
     type: 'int',
     help: 'Duration jitter milliseconds',
   });
   parser.add_argument('-q', '--quit', {
     action: 'store_true',
-    help: 'No log',
+    help: 'No log on queue status',
   });
   parser.add_argument('--metricsFile', {
-    default: 'log/app/metrics.log',
+    default: process.env.APP_METRICS_FILE ?? 'log/app/metrics.log',
     help: 'Metrics append file',
   });
   parser.add_argument('--metricsPeriod', {
-    default: 500,
+    default: process.env.APP_METRICS_PERIOD ?? 500,
+    type: 'int',
     help: 'Metrics scrape period(ms)',
   });
 

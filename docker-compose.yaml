@@ -8,7 +8,16 @@ services:
     volumes:
       - ./dist:/src/app/dist
       - ./node_modules:/src/app/node_modules
-    command: node /src/app/dist/server.js -p $APP_PORT -d 1000 --host $APP_HOST --quit
+      - ./log/app:/src/app/log
+    environment:
+      APP_HOST: ${APP_HOST}
+      APP_PORT: ${APP_PORT}
+      APP_INFLIGHT: 10
+      APP_DURATION: 1000
+      APP_JITTER: 50
+      APP_METRICS_FILE: /src/app/log/metrics.log
+      APP_METRICS_PERIOD: 500
+    command: node /src/app/dist/server.js -q
 
   lb:
     image: nginx

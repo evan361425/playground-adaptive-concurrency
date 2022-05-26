@@ -40,19 +40,19 @@ services:
       - discovery.type=single-node
     ports:
       - 9200:9200
-  kibana:
-    image: kibana:7.17.3
-    volumes:
-      - kibana_data:/usr/share/kibana/data
-    depends_on:
-      - elasticsearch
-    environment:
-      - SERVERNAME=kibana
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=admin
-      - ELASTICSEARCH_PASSWORD=evan361425
-    ports:
-      - 5601:5601
+  # kibana:
+  #   image: kibana:7.17.3
+  #   volumes:
+  #     - kibana_data:/usr/share/kibana/data
+  #   depends_on:
+  #     - elasticsearch
+  #   environment:
+  #     - SERVERNAME=kibana
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #     - ELASTICSEARCH_USERNAME=admin
+  #     - ELASTICSEARCH_PASSWORD=evan361425
+  #   ports:
+  #     - 5601:5601
   filebeat:
     image: elastic/filebeat:7.17.3
     depends_on:
