@@ -18,10 +18,6 @@ http {
       # limit_conn_status 429;
       proxy_pass http://my-app;
     }
-
-    location /metrics {
-      stub_status on;
-    }
   }
 
   map $upstream_response_time $my_res_time {
@@ -31,10 +27,6 @@ http {
   map $upstream_connect_time $my_conn_time {
     default   $upstream_connect_time;
     ""        "0";
-  }
-  map $uri $loggable {
-    /metrics 0;
-    default 1;
   }
   # map "$time_iso8601:$msec" $time_iso8601_ms {
   #   ~([^T]+)T([0-9:]+)\+00:00:[0-9]+\.([0-9]+)$ '$1T$2.$3 +0000';
@@ -50,5 +42,5 @@ http {
     '"connect_time":$my_conn_time }'
   '}';
 
-  access_log /var/log/nginx/access.log json_combined if=$loggable;
+  access_log /var/log/nginx/access.log json_combined;
 }

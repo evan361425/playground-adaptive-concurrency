@@ -16,7 +16,7 @@ services:
       APP_DURATION: 1000
       APP_JITTER: 50
       APP_METRICS_FILE: /src/app/log/metrics.log
-      APP_METRICS_PERIOD: 500
+      APP_METRICS_PERIOD: 600000
     command: node /src/app/dist/server.js -q
 
   lb:
@@ -30,6 +30,20 @@ services:
       APP_PORT: ${APP_PORT}
       LB_PORT: ${LB_PORT}
       NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx
+    depends_on:
+      - app
+
+  adaptive-lb:
+    image: openresty/openresty
+    ports:
+      - $ADAPTIVE_LB_PORT:$ADAPTIVE_LB_PORT
+    volumes:
+      - ./lua:/etc/openresty/lua_modules
+      - ./config/openresty.conf.template:/etc/openresty/templates/openresty.conf.template
+      - ./log/openresty:/var/log/openresty
+    environment:
+      APP_PORT: ${APP_PORT}
+      LB_PORT: ${ADAPTIVE_LB_PORT}
     depends_on:
       - app
 

@@ -4,7 +4,8 @@ import { request } from 'http';
 type Args = {
   host: string;
   port: number;
-  execute: number;
+  path: string;
+  waitTime: number;
   rate: number;
   duration: number;
 };
@@ -18,12 +19,16 @@ function parseArgs(): Args {
     default: 'localhost',
     help: 'Server host, default: localhost',
   });
-  parser.add_argument('-p', '--port', {
+  parser.add_argument('--port', {
     default: 8080,
     type: 'int',
     help: 'Server port, default: 8080',
   });
-  parser.add_argument('-e', '--execute', {
+  parser.add_argument('-p', '--path', {
+    default: '/wait',
+    help: 'Server path, default: /wait',
+  });
+  parser.add_argument('-w', '--waitTime', {
     default: 1000,
     type: 'int',
     help: 'How long(ms) will the request execute in server, default: 1000',
@@ -47,7 +52,7 @@ function main() {
   const httpOptions = {
     hostname: args.host,
     port: args.port,
-    path: '/wait/' + args.execute,
+    path: args.path + '/' + args.waitTime,
     method: 'GET',
   };
 

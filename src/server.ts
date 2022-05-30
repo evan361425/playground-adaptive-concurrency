@@ -7,7 +7,6 @@ function parseArgs(): {
   host: string;
   port: number;
   inflight: number;
-  duration: number;
   jitter: number;
   quit?: true;
   metricsFile: string;
@@ -30,11 +29,6 @@ function parseArgs(): {
     default: process.env.APP_INFLIGHT ?? 10,
     type: 'int',
     help: 'Inflight requests limit',
-  });
-  parser.add_argument('-d', '--duration', {
-    default: process.env.APP_DURATION ?? 1000,
-    type: 'int',
-    help: 'Each request duration in milliseconds',
   });
   parser.add_argument('-j', '--jitter', {
     default: process.env.APP_JITTER ?? 50,
@@ -64,6 +58,11 @@ function wait(ms: number, jitter: number): Promise<void> {
   return new Promise((res) => setTimeout(res, ms + random));
 }
 
+function str2num(value: string): number {
+  const num = parseInt(value, 10);
+  return isNaN(num) ? 0 : num;
+}
+
 function writeMetrics(file: string, queue: Queue) {
   const data = JSON.stringify({ timestamp: Date.now(), ...queue.status() });
   appendFile(file, '{"app":' + data + '}\n', () => null);
@@ -76,13 +75,16 @@ function main() {
   const app = express();
   const queue = new Queue({ inFlightLimit: args.inflight, quit: args.quit });
 
-  app.get('/', queue.middleware(), async (_req, res) => {
-    await wait(args.duration, args.jitter);
+  app.get('/', async (_req, res) => {
+    await wait(0, args.jitter);
     res.send('OK');
   });
-  app.get('/wait/:ms', queue.middleware(), async (req, res) => {
-    const ms = parseInt(req.params.ms, 10);
-    await wait(isNaN(ms) ? args.duration : ms, args.jitter);
+  app.get('/wait/:ms', async (req, res) => {
+    await wait(str2num(req.params.ms), args.jitter);
+    res.send('OK');
+  });
+  app.get('/wait-queue/:ms', queue.middleware(), async (req, res) => {
+    await wait(str2num(req.params.ms), args.jitter);
     res.send('OK');
   });
 
