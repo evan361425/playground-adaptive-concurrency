@@ -46,13 +46,13 @@ end
 
 function WindowedLatency:get()
   if self.isAverage then
-    return self.getAvg()
+    return self:getAvg()
   else
-    return self.getPercentile()
+    return self:getPercentile()
   end
 end
 
-function WindowedLatency::getAvg()
+function WindowedLatency:getAvg()
   local sum_of_latencies, err = self.dict:get(latency_sum_key)
   if not sum_of_latencies then
     return nil, 'Unable to retrieve sum of latencies in window: ' .. (err or "")
@@ -64,7 +64,7 @@ function WindowedLatency::getAvg()
   end
 
   if num_requests < self.min_requests then
-    return nil, string.format('No. of requests in window (%d) less than min required (%d)', num_requests, self.min_requests)
+    return nil, string.format('window not fulled (%d/%d)', num_requests, self.min_requests)
   end
 
   local avg_latency = sum_of_latencies/num_requests
@@ -75,10 +75,10 @@ function WindowedLatency::getAvg()
   return avg_latency, num_requests
 end
 
-function WindowedLatency::getPercentile()
+function WindowedLatency:getPercentile()
   local len, err = self.dict:llen(latencies_key)
   if len < self.min_requests then
-    return nil, string.format('No. of requests in window (%d) less than min required (%d)', len, self.min_requests)
+    return nil, string.format('window not fulled (%d/%d)', len, self.min_requests)
   end
 
   latencies = {}

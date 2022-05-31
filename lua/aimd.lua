@@ -28,19 +28,20 @@ function AIMD.new(aimd_props, concurrency_limit_props)
 end
 
 function AIMD:adjust(current_limit, ifr, latency)
+  local new_limit = current_limit
   if latency >= self.timeout_ms then
     new_limit = math.ceil( current_limit * self.backoff_ratio )
-  else if ifr * 2 >= current_limit
+  elseif ifr * 2 >= current_limit then
     -- Only update if have enough request
     new_limit = current_limit + 1
   end
 
   -- Cool down the limit
-  if (current_limit >= self.max) {
-    current_limit = current_limit / 2;
-  }
+  if new_limit >= self.max then
+    new_limit = math.ceil( current_limit * self.backoff_ratio )
+  end
 
-  return math.min(self.max, math.max(self.min, current_limit));
+  return math.min(self.max, math.max(self.min, new_limit))
 end
 
 return AIMD

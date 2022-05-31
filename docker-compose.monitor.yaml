@@ -50,7 +50,7 @@ services:
   #     - SERVERNAME=kibana
   #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
   #     - ELASTICSEARCH_USERNAME=admin
-  #     - ELASTICSEARCH_PASSWORD=evan361425
+  #     - ELASTICSEARCH_PASSWORD=evan
   #   ports:
   #     - 5601:5601
   filebeat:

@@ -2,6 +2,7 @@
 
 rm -rf log/nginx
 rm -rf log/app
+rm -rf log/openresty
 
 mkdir -p log/app
 

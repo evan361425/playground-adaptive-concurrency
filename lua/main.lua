@@ -54,7 +54,7 @@ function _M.new(props)
   local aimd_props = props['aimd_props']
   if aimd_props == nil then
     aimd_props = {
-    backoff_ratio = 0.9
+      backoff_ratio = 0.9,
       timeout_ms = 5000
     }
   end
@@ -79,20 +79,22 @@ function _M.incoming(self)
   local dict = self.shared_dict
   local initial = self.concurrency_limit_init
   local current_limit = dict:get(limit_key) or initial
+  local ifr
 
   ifr, err = dict:incr(ifr_key, 1, 0)
   if not ifr then -- Fail-open if unable to record request
     return true
   end
 
-  ngx.log(ngx.ERR, string.format("incoming: %d, limit: %d", ifr, current_limit))
+  ngx.log(ngx.INFO, string.format("incoming: (%d/%d)", ifr, current_limit))
 
-  if ifr > limit then
+  if ifr > current_limit then
     ifr, err = dict:incr(ifr_key, -1)
     if not ifr then
       return true -- Fail-open if unable to record request
     end
-    ngx.log(ngx.ERR, string.format("rejected: %d, limit %d", ifr, limit))
+    ifr = dict:get(ifr_key)
+    ngx.log(ngx.ERR, string.format("rejected: (%d/%d)", ifr, current_limit))
     return nil, "rejected"
   end
 
@@ -116,17 +118,27 @@ function _M.start(self)
     local dict = self.shared_dict
     local initial = self.concurrency_limit_init
     local current_limit = dict:get(limit_key) or initial
-    local ifr = dict:get(ifr_key) or 0
+    local ifr = dict:get(ifr_key)
+
+    if ifr == nil then
+      return nil, err
+    end
 
     local windowed_latency, err = self.windowed_latency:get()
     if not windowed_latency then
-      ngx.log(ngx.ERR, "No Adjustment:: " .. err)
+      ngx.log(ngx.INFO, "No Adjustment:: " .. err)
       return nil, err
     end
 
     local num_requests = err
     local new_limit = self.aimd:adjust(current_limit, ifr, windowed_latency)
-    ngx.log(ngx.ERR, string.format("Adjustment:: limit:%d, num:%d, latency:%f new_limit: %d", current_limit, num_requests, windowed_latency, new_limit))
+    ngx.log(ngx.ERR, string.format(
+      "Adjustment:: requests: %d, limit %d --> %d, latency:%f",
+      ifr,
+      current_limit,
+      new_limit,
+      windowed_latency
+    ))
 
     local succ, err, forcible = dict:set(limit_key, new_limit)
     if not succ then
