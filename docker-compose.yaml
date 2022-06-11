@@ -47,14 +47,18 @@ services:
     depends_on:
       - app
 
-  # lb-exporter:
-  #   image: nginx/nginx-prometheus-exporter
+  # adaptive-native-lb:
+  #   image: envoyproxy/envoy:v1.21-latest
   #   ports:
-  #     - 9113:9113
+  #     - $ADAPTIVE_NATIVE_LB_PORT:$ADAPTIVE_NATIVE_LB_PORT
+  #   volumes:
+  #     - ./config/envoy.conf:/etc/nginx/conf.d/nginx.conf
+  #     - ./log/envoy:/var/log/envoy
+  #   environment:
+  #     APP_PORT: ${APP_PORT}
+  #     LB_PORT: ${ADAPTIVE_LB_PORT}
   #   depends_on:
-  #     - lb
-  #   command:
-  #     - "-nginx.scrape-uri=http://lb:$LB_PORT/metrics"
+  #     - app
 
 networks:
   default:

@@ -1,5 +1,6 @@
 import { ArgumentParser } from 'argparse';
 import { request } from 'http';
+import { RequestOptions } from 'https';
 
 type Args = {
   host: string;
@@ -8,6 +9,7 @@ type Args = {
   waitTime: number;
   rate: number;
   duration: number;
+  timeout: number;
 };
 
 function parseArgs(): Args {
@@ -43,16 +45,22 @@ function parseArgs(): Args {
     type: 'int',
     help: 'How many seconds you want to run, 0 means forever, default: 15',
   });
+  parser.add_argument('-t', '--timeout', {
+    default: 30000,
+    type: 'int',
+    help: 'Timeout ms, default: 30000',
+  });
 
   return parser.parse_args();
 }
 
 function main() {
   const args = parseArgs();
-  const httpOptions = {
+  const httpOptions: RequestOptions = {
     hostname: args.host,
     port: args.port,
     path: args.path + '/' + args.waitTime,
+    timeout: args.timeout,
     method: 'GET',
   };
 

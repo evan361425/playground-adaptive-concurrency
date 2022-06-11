@@ -94,7 +94,7 @@ function _M.incoming(self)
       return true -- Fail-open if unable to record request
     end
     ifr = dict:get(ifr_key)
-    ngx.log(ngx.ERR, string.format("rejected: (%d/%d)", ifr, current_limit))
+    ngx.log(ngx.WARN, string.format("rejected: (%d/%d)", ifr, current_limit))
     return nil, "rejected"
   end
 

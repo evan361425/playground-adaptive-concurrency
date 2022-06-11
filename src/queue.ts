@@ -4,11 +4,11 @@ import * as Q from 'queue';
 export class Queue {
   readonly queue: Q.default;
 
-  _inflightRequest = 0;
+  private _inflightRequest = 0;
 
   constructor(
     readonly config: {
-      inFlightLimit: number;
+      inFlightLimit?: number;
       quit?: boolean;
     },
   ) {
@@ -28,6 +28,10 @@ export class Queue {
       this._inflightRequest--;
       job.prototype.logger('event', 'error');
     });
+  }
+
+  get ifr(): number {
+    return this._inflightRequest;
   }
 
   status() {
