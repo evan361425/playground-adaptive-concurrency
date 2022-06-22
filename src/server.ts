@@ -8,6 +8,7 @@ function parseArgs(): {
   port: number;
   inflight: number;
   jitter: number;
+  wait: string | number;
   quit?: true;
   metricsFile: string;
   metricsPeriod: number;
@@ -35,6 +36,11 @@ function parseArgs(): {
     type: 'int',
     help: 'Duration jitter milliseconds',
   });
+  parser.add_argument('-w', '--wait', {
+    default: process.env.APP_WAIT ?? 500,
+    type: 'int',
+    help: 'How long the request wait(ms) in default',
+  });
   parser.add_argument('-q', '--quit', {
     action: 'store_true',
     help: 'No log on queue status',
@@ -58,7 +64,9 @@ function wait(ms: number, jitter: number, offset = 0): Promise<void> {
   return new Promise((res) => setTimeout(res, offset + ms + random));
 }
 
-function str2num(value: string): number {
+function str2num(value: string | number): number {
+  if (typeof value === 'number') return value;
+
   const num = parseInt(value, 10);
   return isNaN(num) ? 0 : num;
 }
@@ -80,31 +88,27 @@ function main() {
   console.log(JSON.stringify({ config: args }, undefined, 2));
 
   const app = express();
-  const limitedQueue = new Queue({
+  const queue = new Queue({
     inFlightLimit: args.inflight,
     quit: args.quit,
   });
-  const queue = new Queue({ quit: args.quit });
 
   app.get('/', async (_req, res) => {
     await wait(0, args.jitter);
     res.send('OK');
   });
-  app.get('/wait/:ms', queue.middleware(), async (req, res) => {
-    await wait(str2num(req.params.ms), args.jitter);
+  app.get('/set-wait/:ms', queue.middleware(), async (req, res) => {
+    args.wait = req.params.ms;
     res.send('OK');
   });
-  app.get('/wait-limited/:ms', limitedQueue.middleware(), async (req, res) => {
-    await wait(str2num(req.params.ms), args.jitter);
+  app.get('/wait/:ms?', queue.middleware(), async (req, res) => {
+    await wait(str2num(req.params.ms ?? args.wait), args.jitter);
     res.send('OK');
   });
 
   app.listen(args.port, args.host);
 
-  setInterval(writeMetrics, args.metricsPeriod, args.metricsFile, [
-    queue,
-    limitedQueue,
-  ]);
+  setInterval(writeMetrics, args.metricsPeriod, args.metricsFile, [queue]);
 }
 
 main();
