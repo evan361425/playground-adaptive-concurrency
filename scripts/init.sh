@@ -1,8 +1,6 @@
 #!/bin/bash
 
-rm -rf log/nginx
-rm -rf log/app
-rm -rf log/openresty
+rm -rf log/*
 
 mkdir -p log/app
 
@@ -11,7 +9,7 @@ docker-compose -f docker-compose.monitor.yaml -p ac-monitor up -d
 
 echo "========== Start Custom Setting =========="
 
-printf "Elastic Search health checking"
+printf "Elastic Search health checking(around 1min)"
 while : ; do
   printf "."
 
@@ -25,6 +23,7 @@ while : ; do
   sleep 3
 done
 
+echo "Setting ES pipeline for nginx"
 # https://www.elastic.co/guide/en/beats/filebeat/current/configuring-ingest-node.html
 curl -X PUT "localhost:9200/_ingest/pipeline/filebeat_nginx" \
   -H 'Content-Type: application/json' -d'
@@ -43,8 +42,9 @@ curl -X PUT "localhost:9200/_ingest/pipeline/filebeat_nginx" \
   ]
 }
 '
-
 echo ""
+
+echo "Setting ES pipeline for app"
 curl -X PUT "localhost:9200/_ingest/pipeline/filebeat_app" \
   -H 'Content-Type: application/json' -d'
 {
@@ -62,4 +62,4 @@ curl -X PUT "localhost:9200/_ingest/pipeline/filebeat_app" \
   ]
 }
 '
-
+echo ""

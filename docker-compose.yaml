@@ -1,5 +1,16 @@
 version: '3'
 
+x-adaptive-lb: &adaptive-lb
+  image: openresty/openresty:1.21.4.1-0-bionic
+  volumes:
+    - ./lua:/etc/openresty/lua_modules
+    - ./config/openresty.conf:/etc/nginx/template
+    - ./log/openresty:/var/log/openresty
+    - ./scripts/openrestry-entry.sh:/entry.sh
+  depends_on:
+    - app
+  command: sh -c "envsubst '$$LOG_FILE$$APP_PORT$$LB_PORT$$LB_NAME' < /etc/nginx/template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+
 services:
   app:
     image: node:14-alpine
@@ -24,7 +35,7 @@ services:
     ports:
       - $LB_PORT:$LB_PORT
     volumes:
-      - ./config/nginx.conf.template:/etc/nginx/templates/nginx.conf.template
+      - ./config/nginx.conf:/etc/nginx/templates/nginx.conf.template
       - ./log/nginx:/var/log/nginx
     environment:
       APP_PORT: ${APP_PORT}
@@ -34,31 +45,24 @@ services:
       - app
 
   adaptive-lb:
-    image: openresty/openresty:1.21.4.1-0-alpine-fat
+    <<: *adaptive-lb
     ports:
       - $ADAPTIVE_LB_PORT:$ADAPTIVE_LB_PORT
-    volumes:
-      - ./lua:/etc/openresty/lua_modules
-      - ./config/openresty.conf:/etc/nginx/conf.d/nginx.conf
-      - ./log/openresty:/var/log/openresty
     environment:
       APP_PORT: ${APP_PORT}
       LB_PORT: ${ADAPTIVE_LB_PORT}
-    depends_on:
-      - app
+      LOG_FILE: access.log
+      LB_NAME: A
 
-  # adaptive-native-lb:
-  #   image: envoyproxy/envoy:v1.21-latest
-  #   ports:
-  #     - $ADAPTIVE_NATIVE_LB_PORT:$ADAPTIVE_NATIVE_LB_PORT
-  #   volumes:
-  #     - ./config/envoy.conf:/etc/nginx/conf.d/nginx.conf
-  #     - ./log/envoy:/var/log/envoy
-  #   environment:
-  #     APP_PORT: ${APP_PORT}
-  #     LB_PORT: ${ADAPTIVE_LB_PORT}
-  #   depends_on:
-  #     - app
+  adaptive-lb2:
+    ports:
+      - $ADAPTIVE_LB_PORT2:$ADAPTIVE_LB_PORT2
+    environment:
+      APP_PORT: ${APP_PORT}
+      LB_PORT: ${ADAPTIVE_LB_PORT2}
+      LOG_FILE: access2.log
+      LB_NAME: B
+    <<: *adaptive-lb
 
 networks:
   default:

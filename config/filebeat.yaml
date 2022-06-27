@@ -12,7 +12,6 @@ filebeat.inputs:
   - type: log
     enabled: true
     paths:
-      - /var/log/envoy/*.log
       - /var/log/openresty/*.log
       - /var/log/nginx/*.log
       - /var/log/app/*.log

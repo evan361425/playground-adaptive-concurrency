@@ -6,6 +6,7 @@ type Args = {
   host: string;
   port: number;
   path: string;
+  name: string;
   waitTime: number;
   rate: number;
   duration: number;
@@ -29,6 +30,10 @@ function parseArgs(): Args {
   parser.add_argument('-p', '--path', {
     default: '/wait',
     help: 'Server path, default: /wait',
+  });
+  parser.add_argument('-n', '--name', {
+    default: 'A',
+    help: 'Client name, default: A',
   });
   parser.add_argument('-w', '--waitTime', {
     default: 1000,
@@ -62,6 +67,9 @@ function main() {
     path: args.path + '/' + args.waitTime,
     timeout: args.timeout,
     method: 'GET',
+    headers: {
+      'x-client-name': args.name,
+    },
   };
 
   let startedEpoch = 0;
