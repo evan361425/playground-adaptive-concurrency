@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "argparse": "^2.0.1",
-    "autocannon": "^7.9.0",
     "express": "^4.17.3",
     "queue": "^6.0.2"
   },
