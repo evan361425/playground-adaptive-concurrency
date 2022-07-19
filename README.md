@@ -35,7 +35,7 @@ bash scripts/init.sh
 node dist/client.js -p /wait-limited -w 700 -r 15 -d 0 --port 8081
 ```
 
-## Bream
+## Rubbing
 
 ```bash
 bash scripts/done.sh
