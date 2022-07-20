@@ -499,7 +499,7 @@
       "type": "timeseries"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -507,841 +507,843 @@
         "y": 17
       },
       "id": 16,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMin": 1,
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": 15000,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 18
+          },
+          "id": 13,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "alias": "{{term log.nginx.status}}",
+              "bucketAggs": [
+                {
+                  "field": "log.nginx.status",
+                  "id": "2",
+                  "settings": {
+                    "min_doc_count": "1",
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                  },
+                  "type": "terms"
+                },
+                {
+                  "field": "@timestamp",
+                  "id": "3",
+                  "settings": {
+                    "interval": "1s",
+                    "min_doc_count": "0",
+                    "timeZone": "utc",
+                    "trimEdges": "0"
+                  },
+                  "type": "date_histogram"
+                }
+              ],
+              "datasource": {
+                "type": "elasticsearch",
+                "uid": "P31C819B24CF3C3C7"
+              },
+              "metrics": [
+                {
+                  "id": "1",
+                  "type": "count"
+                }
+              ],
+              "query": "log.nginx.proxy:\"A\"",
+              "refId": "A",
+              "timeField": "@timestamp"
+            },
+            {
+              "alias": "{{term log.nginx.status}} (10s)",
+              "bucketAggs": [
+                {
+                  "field": "log.nginx.status",
+                  "id": "2",
+                  "settings": {
+                    "min_doc_count": "1",
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                  },
+                  "type": "terms"
+                },
+                {
+                  "field": "@timestamp",
+                  "id": "3",
+                  "settings": {
+                    "interval": "10s",
+                    "min_doc_count": "0",
+                    "timeZone": "utc",
+                    "trimEdges": "0"
+                  },
+                  "type": "date_histogram"
+                }
+              ],
+              "datasource": {
+                "type": "elasticsearch",
+                "uid": "P31C819B24CF3C3C7"
+              },
+              "hide": false,
+              "metrics": [
+                {
+                  "id": "1",
+                  "type": "count"
+                }
+              ],
+              "query": "log.nginx.proxy:\"A\"",
+              "refId": "B",
+              "timeField": "@timestamp"
+            }
+          ],
+          "title": "Server throughput by A",
+          "transformations": [
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "200 (~10s)",
+                "binary": {
+                  "left": "200 (10s)",
+                  "operator": "/",
+                  "reducer": "sum",
+                  "right": "10"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "include": ["200 (10s)"],
+                  "reducer": "mean"
+                }
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "503 (~10s)",
+                "binary": {
+                  "left": "503 (10s)",
+                  "operator": "/",
+                  "reducer": "sum",
+                  "right": "10"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "reducer": "sum"
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "200 (10s)": true,
+                  "503 (10s)": true,
+                  "503 (~10s)": false,
+                  "504 (10s)": true
+                },
+                "indexByName": {},
+                "renameByName": {}
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMin": 1,
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": 15000,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 18
+          },
+          "id": 14,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "alias": "{{term log.nginx.status}}",
+              "bucketAggs": [
+                {
+                  "field": "log.nginx.status",
+                  "id": "2",
+                  "settings": {
+                    "min_doc_count": "1",
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                  },
+                  "type": "terms"
+                },
+                {
+                  "field": "@timestamp",
+                  "id": "3",
+                  "settings": {
+                    "interval": "1s",
+                    "min_doc_count": "0",
+                    "timeZone": "utc",
+                    "trimEdges": "0"
+                  },
+                  "type": "date_histogram"
+                }
+              ],
+              "datasource": {
+                "type": "elasticsearch",
+                "uid": "P31C819B24CF3C3C7"
+              },
+              "metrics": [
+                {
+                  "id": "1",
+                  "type": "count"
+                }
+              ],
+              "query": "log.nginx.proxy:\"B\"",
+              "refId": "A",
+              "timeField": "@timestamp"
+            },
+            {
+              "alias": "{{term log.nginx.status}} (10s)",
+              "bucketAggs": [
+                {
+                  "field": "log.nginx.status",
+                  "id": "2",
+                  "settings": {
+                    "min_doc_count": "1",
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                  },
+                  "type": "terms"
+                },
+                {
+                  "field": "@timestamp",
+                  "id": "3",
+                  "settings": {
+                    "interval": "10s",
+                    "min_doc_count": "0",
+                    "timeZone": "utc",
+                    "trimEdges": "0"
+                  },
+                  "type": "date_histogram"
+                }
+              ],
+              "datasource": {
+                "type": "elasticsearch",
+                "uid": "P31C819B24CF3C3C7"
+              },
+              "hide": false,
+              "metrics": [
+                {
+                  "id": "1",
+                  "type": "count"
+                }
+              ],
+              "query": "log.nginx.proxy:\"B\"",
+              "refId": "B",
+              "timeField": "@timestamp"
+            }
+          ],
+          "title": "Server throughput by B",
+          "transformations": [
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "200 (~10s)",
+                "binary": {
+                  "left": "200 (10s)",
+                  "operator": "/",
+                  "reducer": "sum",
+                  "right": "10"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "include": ["200 (10s)"],
+                  "reducer": "mean"
+                }
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "503 (~10s)",
+                "binary": {
+                  "left": "503 (10s)",
+                  "operator": "/",
+                  "reducer": "sum",
+                  "right": "10"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "reducer": "sum"
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "200 (10s)": true,
+                  "503 (10s)": true,
+                  "503 (~10s)": false,
+                  "504 (10s)": true
+                },
+                "indexByName": {},
+                "renameByName": {}
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
       "title": "By Proxy",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "P31C819B24CF3C3C7"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "axisSoftMin": 1,
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": 15000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 18
-      },
-      "id": 13,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "alias": "{{term log.nginx.status}}",
-          "bucketAggs": [
-            {
-              "field": "log.nginx.status",
-              "id": "2",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "@timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "1s",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "P31C819B24CF3C3C7"
-          },
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "log.nginx.proxy:\"A\"",
-          "refId": "A",
-          "timeField": "@timestamp"
-        },
-        {
-          "alias": "{{term log.nginx.status}} (10s)",
-          "bucketAggs": [
-            {
-              "field": "log.nginx.status",
-              "id": "2",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "@timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "10s",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "P31C819B24CF3C3C7"
-          },
-          "hide": false,
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "log.nginx.proxy:\"A\"",
-          "refId": "B",
-          "timeField": "@timestamp"
-        }
-      ],
-      "title": "Server throughput by A",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "200 (~10s)",
-            "binary": {
-              "left": "200 (10s)",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "10"
-            },
-            "mode": "binary",
-            "reduce": {
-              "include": ["200 (10s)"],
-              "reducer": "mean"
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "503 (~10s)",
-            "binary": {
-              "left": "503 (10s)",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "10"
-            },
-            "mode": "binary",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "200 (10s)": true,
-              "503 (10s)": true,
-              "503 (~10s)": false,
-              "504 (10s)": true
-            },
-            "indexByName": {},
-            "renameByName": {}
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "P31C819B24CF3C3C7"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "axisSoftMin": 1,
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": 15000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 18
-      },
-      "id": 14,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "alias": "{{term log.nginx.status}}",
-          "bucketAggs": [
-            {
-              "field": "log.nginx.status",
-              "id": "2",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "@timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "1s",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "P31C819B24CF3C3C7"
-          },
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "log.nginx.proxy:\"B\"",
-          "refId": "A",
-          "timeField": "@timestamp"
-        },
-        {
-          "alias": "{{term log.nginx.status}} (10s)",
-          "bucketAggs": [
-            {
-              "field": "log.nginx.status",
-              "id": "2",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "@timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "10s",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "P31C819B24CF3C3C7"
-          },
-          "hide": false,
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "log.nginx.proxy:\"B\"",
-          "refId": "B",
-          "timeField": "@timestamp"
-        }
-      ],
-      "title": "Server throughput by B",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "200 (~10s)",
-            "binary": {
-              "left": "200 (10s)",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "10"
-            },
-            "mode": "binary",
-            "reduce": {
-              "include": ["200 (10s)"],
-              "reducer": "mean"
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "503 (~10s)",
-            "binary": {
-              "left": "503 (10s)",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "10"
-            },
-            "mode": "binary",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "200 (10s)": true,
-              "503 (10s)": true,
-              "503 (~10s)": false,
-              "504 (10s)": true
-            },
-            "indexByName": {},
-            "renameByName": {}
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 18
       },
       "id": 12,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMin": 1,
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": 15000,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 19
+          },
+          "id": 9,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "alias": "{{term log.nginx.status}}",
+              "bucketAggs": [
+                {
+                  "field": "log.nginx.status",
+                  "id": "2",
+                  "settings": {
+                    "min_doc_count": "1",
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                  },
+                  "type": "terms"
+                },
+                {
+                  "field": "@timestamp",
+                  "id": "3",
+                  "settings": {
+                    "interval": "1s",
+                    "min_doc_count": "0",
+                    "timeZone": "utc",
+                    "trimEdges": "0"
+                  },
+                  "type": "date_histogram"
+                }
+              ],
+              "datasource": {
+                "type": "elasticsearch",
+                "uid": "P31C819B24CF3C3C7"
+              },
+              "metrics": [
+                {
+                  "id": "1",
+                  "type": "count"
+                }
+              ],
+              "query": "log.nginx.client:\"A\"",
+              "refId": "A",
+              "timeField": "@timestamp"
+            },
+            {
+              "alias": "{{term log.nginx.status}} (10s)",
+              "bucketAggs": [
+                {
+                  "field": "log.nginx.status",
+                  "id": "2",
+                  "settings": {
+                    "min_doc_count": "1",
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                  },
+                  "type": "terms"
+                },
+                {
+                  "field": "@timestamp",
+                  "id": "3",
+                  "settings": {
+                    "interval": "10s",
+                    "min_doc_count": "0",
+                    "timeZone": "utc",
+                    "trimEdges": "0"
+                  },
+                  "type": "date_histogram"
+                }
+              ],
+              "datasource": {
+                "type": "elasticsearch",
+                "uid": "P31C819B24CF3C3C7"
+              },
+              "hide": false,
+              "metrics": [
+                {
+                  "id": "1",
+                  "type": "count"
+                }
+              ],
+              "query": "log.nginx.client:\"A\"",
+              "refId": "B",
+              "timeField": "@timestamp"
+            }
+          ],
+          "title": "Server throughput for A",
+          "transformations": [
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "200 (~10s)",
+                "binary": {
+                  "left": "200 (10s)",
+                  "operator": "/",
+                  "reducer": "sum",
+                  "right": "10"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "include": ["200 (10s)"],
+                  "reducer": "mean"
+                }
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "503 (~10s)",
+                "binary": {
+                  "left": "503 (10s)",
+                  "operator": "/",
+                  "reducer": "sum",
+                  "right": "10"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "reducer": "sum"
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "200 (10s)": true,
+                  "503 (10s)": true,
+                  "503 (~10s)": false,
+                  "504 (10s)": true
+                },
+                "indexByName": {},
+                "renameByName": {}
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMin": 1,
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": 15000,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 19
+          },
+          "id": 10,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "alias": "{{term log.nginx.status}}",
+              "bucketAggs": [
+                {
+                  "field": "log.nginx.status",
+                  "id": "2",
+                  "settings": {
+                    "min_doc_count": "1",
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                  },
+                  "type": "terms"
+                },
+                {
+                  "field": "@timestamp",
+                  "id": "3",
+                  "settings": {
+                    "interval": "1s",
+                    "min_doc_count": "0",
+                    "timeZone": "utc",
+                    "trimEdges": "0"
+                  },
+                  "type": "date_histogram"
+                }
+              ],
+              "datasource": {
+                "type": "elasticsearch",
+                "uid": "P31C819B24CF3C3C7"
+              },
+              "metrics": [
+                {
+                  "id": "1",
+                  "type": "count"
+                }
+              ],
+              "query": "log.nginx.client:\"B\"",
+              "refId": "A",
+              "timeField": "@timestamp"
+            },
+            {
+              "alias": "{{term log.nginx.status}} (10s)",
+              "bucketAggs": [
+                {
+                  "field": "log.nginx.status",
+                  "id": "2",
+                  "settings": {
+                    "min_doc_count": "1",
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                  },
+                  "type": "terms"
+                },
+                {
+                  "field": "@timestamp",
+                  "id": "3",
+                  "settings": {
+                    "interval": "10s",
+                    "min_doc_count": "0",
+                    "timeZone": "utc",
+                    "trimEdges": "0"
+                  },
+                  "type": "date_histogram"
+                }
+              ],
+              "datasource": {
+                "type": "elasticsearch",
+                "uid": "P31C819B24CF3C3C7"
+              },
+              "hide": false,
+              "metrics": [
+                {
+                  "id": "1",
+                  "type": "count"
+                }
+              ],
+              "query": "log.nginx.client:\"B\"",
+              "refId": "B",
+              "timeField": "@timestamp"
+            }
+          ],
+          "title": "Server throughput for B",
+          "transformations": [
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "200 (~10s)",
+                "binary": {
+                  "left": "200 (10s)",
+                  "operator": "/",
+                  "reducer": "sum",
+                  "right": "10"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "include": ["200 (10s)"],
+                  "reducer": "mean"
+                }
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "alias": "503 (~10s)",
+                "binary": {
+                  "left": "503 (10s)",
+                  "operator": "/",
+                  "reducer": "sum",
+                  "right": "10"
+                },
+                "mode": "binary",
+                "reduce": {
+                  "reducer": "sum"
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "200 (10s)": true,
+                  "503 (10s)": true,
+                  "503 (~10s)": false,
+                  "504 (10s)": true
+                },
+                "indexByName": {},
+                "renameByName": {}
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
       "title": "By Client",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "P31C819B24CF3C3C7"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "axisSoftMin": 1,
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": 15000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 28
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "alias": "{{term log.nginx.status}}",
-          "bucketAggs": [
-            {
-              "field": "log.nginx.status",
-              "id": "2",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "@timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "1s",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "P31C819B24CF3C3C7"
-          },
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "log.nginx.client:\"A\"",
-          "refId": "A",
-          "timeField": "@timestamp"
-        },
-        {
-          "alias": "{{term log.nginx.status}} (10s)",
-          "bucketAggs": [
-            {
-              "field": "log.nginx.status",
-              "id": "2",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "@timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "10s",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "P31C819B24CF3C3C7"
-          },
-          "hide": false,
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "log.nginx.client:\"A\"",
-          "refId": "B",
-          "timeField": "@timestamp"
-        }
-      ],
-      "title": "Server throughput for A",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "200 (~10s)",
-            "binary": {
-              "left": "200 (10s)",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "10"
-            },
-            "mode": "binary",
-            "reduce": {
-              "include": ["200 (10s)"],
-              "reducer": "mean"
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "503 (~10s)",
-            "binary": {
-              "left": "503 (10s)",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "10"
-            },
-            "mode": "binary",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "200 (10s)": true,
-              "503 (10s)": true,
-              "503 (~10s)": false,
-              "504 (10s)": true
-            },
-            "indexByName": {},
-            "renameByName": {}
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "elasticsearch",
-        "uid": "P31C819B24CF3C3C7"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "axisSoftMin": 1,
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": 15000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 28
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "alias": "{{term log.nginx.status}}",
-          "bucketAggs": [
-            {
-              "field": "log.nginx.status",
-              "id": "2",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "@timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "1s",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "P31C819B24CF3C3C7"
-          },
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "log.nginx.client:\"B\"",
-          "refId": "A",
-          "timeField": "@timestamp"
-        },
-        {
-          "alias": "{{term log.nginx.status}} (10s)",
-          "bucketAggs": [
-            {
-              "field": "log.nginx.status",
-              "id": "2",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "@timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "10s",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
-            }
-          ],
-          "datasource": {
-            "type": "elasticsearch",
-            "uid": "P31C819B24CF3C3C7"
-          },
-          "hide": false,
-          "metrics": [
-            {
-              "id": "1",
-              "type": "count"
-            }
-          ],
-          "query": "log.nginx.client:\"B\"",
-          "refId": "B",
-          "timeField": "@timestamp"
-        }
-      ],
-      "title": "Server throughput for B",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "200 (~10s)",
-            "binary": {
-              "left": "200 (10s)",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "10"
-            },
-            "mode": "binary",
-            "reduce": {
-              "include": ["200 (10s)"],
-              "reducer": "mean"
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "503 (~10s)",
-            "binary": {
-              "left": "503 (10s)",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "10"
-            },
-            "mode": "binary",
-            "reduce": {
-              "reducer": "sum"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "200 (10s)": true,
-              "503 (10s)": true,
-              "503 (~10s)": false,
-              "504 (10s)": true
-            },
-            "indexByName": {},
-            "renameByName": {}
-          }
-        }
-      ],
-      "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": "2s",
   "schemaVersion": 36,
   "style": "dark",
   "tags": [],

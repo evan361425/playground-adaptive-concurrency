@@ -1,18 +1,24 @@
-import { ArgumentParser } from 'argparse';
-import express from 'express';
-import { appendFile } from 'fs';
-import { Queue } from './queue';
+const { ArgumentParser } = require('argparse');
+const express = require('express');
+const { appendFile } = require('fs');
+const { Queue } = require('./queue');
 
-function parseArgs(): {
-  host: string;
-  port: number;
-  inflight: number;
-  jitter: number;
-  wait: string | number;
-  quit?: true;
-  metricsFile: string;
-  metricsPeriod: number;
-} {
+/**
+ * @typedef {object} Args
+ * @property {string} host
+ * @property {number} port
+ * @property {number} inflight
+ * @property {number} jitter
+ * @property {string|number} wait
+ * @property {true} quiet
+ * @property {string} metricsFile
+ * @property {number} metricsPeriod
+ */
+
+/**
+ * @returns {Args}
+ */
+function parseArgs() {
   const parser = new ArgumentParser({
     description: 'Run simple server with some configurable features',
   });
@@ -41,7 +47,7 @@ function parseArgs(): {
     type: 'int',
     help: 'How long the request wait(ms) in default',
   });
-  parser.add_argument('-q', '--quit', {
+  parser.add_argument('-q', '--quiet', {
     action: 'store_true',
     help: 'No log on queue status',
   });
@@ -58,20 +64,35 @@ function parseArgs(): {
   return parser.parse_args();
 }
 
-function wait(ms: number, jitter: number, offset = 0): Promise<void> {
+/**
+ *
+ * @param {number} ms
+ * @param {number} jitter
+ * @param {number} offset
+ * @returns {Promise<void>}
+ */
+function wait(ms, jitter, offset = 0) {
   // between -jitter ~ jitter
   const random = Math.ceil((Math.random() * 2 - 1) * jitter);
   return new Promise((res) => setTimeout(res, offset + ms + random));
 }
 
-function str2num(value: string | number): number {
+/**
+ * @param {string|number} value
+ * @returns {number}
+ */
+function str2num(value) {
   if (typeof value === 'number') return value;
 
   const num = parseInt(value, 10);
   return isNaN(num) ? 0 : num;
 }
 
-function writeMetrics(file: string, queues: Queue[]) {
+/**
+ * @param {string} file
+ * @param {Queue[]} queues
+ */
+function writeMetrics(file, queues) {
   const merged = queues
     .map((queue) => queue.status())
     .reduce((prev, curr) => ({
@@ -79,6 +100,7 @@ function writeMetrics(file: string, queues: Queue[]) {
       pending: prev.pending + curr.pending,
       total: prev.total + curr.total,
     }));
+  // if (merged.total === 0) return;
   const data = JSON.stringify({ timestamp: Date.now(), ...merged });
   appendFile(file, '{"app":' + data + '}\n', () => null);
 }
@@ -90,7 +112,7 @@ function main() {
   const app = express();
   const queue = new Queue({
     inFlightLimit: args.inflight,
-    quit: args.quit,
+    quiet: args.quiet,
   });
 
   app.get('/', async (_req, res) => {

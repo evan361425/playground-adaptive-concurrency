@@ -1,48 +1,73 @@
-import { RequestHandler } from 'express';
-import * as Q from 'queue';
+const { RequestHandler } = require('express');
+const QueueLib = require('queue');
 
-export class Queue {
-  readonly queue: Q.default;
+class Queue {
+  /**
+   * @var {QueueLib.default}
+   */
+  queue;
 
-  private _inflightRequest = 0;
+  /**
+   * @typedef Config
+   * @property {number} inFlightLimit
+   * @property {boolean} quiet
+   * @var {Config}
+   */
+  config;
 
-  constructor(
-    readonly config: {
-      inFlightLimit?: number;
-      quit?: boolean;
-    },
-  ) {
-    this.queue = new Q.default({
+  #inflightRequest = 0;
+
+  /**
+   * @param {Config} config
+   */
+  constructor(config) {
+    this.config = config;
+
+    this.queue = new QueueLib.default({
       autostart: true,
       concurrency: config.inFlightLimit,
     });
     this.queue.on('start', (job) => {
-      this._inflightRequest++;
+      this.#inflightRequest++;
       job.prototype.logger('event', 'start');
     });
     this.queue.on('success', (_result, job) => {
-      this._inflightRequest--;
+      this.#inflightRequest--;
       job.prototype.logger('event', 'success');
     });
     this.queue.on('error', (_err, job) => {
-      this._inflightRequest--;
+      this.#inflightRequest--;
       job.prototype.logger('event', 'error');
     });
   }
 
-  get ifr(): number {
-    return this._inflightRequest;
+  /**
+   * @returns {number}
+   */
+  get ifr() {
+    return this.#inflightRequest;
   }
 
+  /**
+   * @typedef Status
+   * @property {number} inflight
+   * @property {number} pending
+   * @property {number} total
+   * @returns {Status}
+   */
   status() {
     return {
-      inflight: this._inflightRequest,
-      pending: this.queue.length - this._inflightRequest,
+      inflight: this.ifr,
+      pending: this.queue.length - this.ifr,
       total: this.queue.length,
     };
   }
 
-  prometheusStatus(prefix: string): string {
+  /**
+   * @param {string} prefix
+   * @returns {string}
+   */
+  prometheusStatus(prefix) {
     const status = this.status();
     return [
       [
@@ -63,11 +88,19 @@ export class Queue {
     ].join('\n');
   }
 
-  middleware(): RequestHandler {
+  /**
+   * @return {RequestHandler}
+   */
+  middleware() {
     return (_req, res, next) => {
       const logger = this.loggerGenerator();
 
-      function job(cb?: Q.QueueWorkerCallback) {
+      /**
+       *
+       * @param {function} cb
+       * @returns {void}
+       */
+      function job(cb) {
         if (!cb) return next();
 
         const _end = res.end;
@@ -88,15 +121,21 @@ export class Queue {
 
   loggerGenerator() {
     const id = (Math.random() * 10000).toFixed(0).toString().padStart(4, '0');
-    return (type: string, msg: string) => {
-      if (this.config.quit === true) return;
+    /**
+     * @param {string} type
+     * @param {string} msg
+     */
+    return (type, msg) => {
+      if (this.config.quiet === true) return;
       const now = new Date();
       const nowTime = [now.getHours(), now.getMinutes(), now.getSeconds()]
         .map((e) => e.toString().padStart(2, '0'))
         .join(':');
       const nowM = now.getMilliseconds().toString().padStart(3, '0');
-      const status = `${this._inflightRequest}:${this.queue.length}`;
+      const status = `${this.ifr}:${this.queue.length}`;
       console.log([nowTime + '.' + nowM, id, status, type, msg].join('\t'));
     };
   }
 }
+
+module.exports = { Queue };

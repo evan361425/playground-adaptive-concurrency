@@ -1,19 +1,22 @@
-import { ArgumentParser } from 'argparse';
-import { request } from 'http';
-import { RequestOptions } from 'https';
+const { ArgumentParser } = require('argparse');
+const { request } = require('http');
 
-type Args = {
-  host: string;
-  port: number;
-  path: string;
-  name: string;
-  waitTime: number;
-  rate: number;
-  duration: number;
-  timeout: number;
-};
+/**
+ * @typedef {object} Args
+ * @property {string} host
+ * @property {number} port
+ * @property {string} path
+ * @property {string} name
+ * @property {number} waitTime
+ * @property {number} rate
+ * @property {number} duration
+ * @property {number} timeout
+ */
 
-function parseArgs(): Args {
+/**
+ * @returns {Args}
+ */
+function parseArgs() {
   const parser = new ArgumentParser({
     description: 'Run simple server with some configurable features',
   });
@@ -61,7 +64,7 @@ function parseArgs(): Args {
 
 function main() {
   const args = parseArgs();
-  const httpOptions: RequestOptions = {
+  const httpOptions = {
     hostname: args.host,
     port: args.port,
     path: args.path + '/' + args.waitTime,
@@ -74,9 +77,16 @@ function main() {
 
   let startedEpoch = 0;
   let totalResponse = 0;
-  const responses: Record<string, number> = {};
 
-  function makeRequests(count: number) {
+  /**
+   * @var {map<number, number>}
+   */
+  const responses = {};
+
+  /**
+   * @param {number} count
+   */
+  function makeRequests(count) {
     while (count--) {
       request(httpOptions, (res) => {
         const c = res.statusCode ?? 0;

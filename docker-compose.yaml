@@ -1,12 +1,11 @@
 version: '3'
 
 x-adaptive-lb: &adaptive-lb
-  image: openresty/openresty:1.21.4.1-0-bionic
+  image: openresty/openresty:1.21.4.1-0-alpine-fat
   volumes:
     - ./lua:/etc/openresty/lua_modules
     - ./config/openresty.conf:/etc/nginx/template
     - ./log/openresty:/var/log/openresty
-    - ./scripts/openrestry-entry.sh:/entry.sh
   depends_on:
     - app
   command: sh -c "envsubst '$$LOG_FILE$$APP_PORT$$LB_PORT$$LB_NAME' < /etc/nginx/template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
@@ -17,18 +16,18 @@ services:
     ports:
       - $APP_PORT:$APP_PORT
     volumes:
-      - ./dist:/src/app/dist
-      - ./node_modules:/src/app/node_modules
-      - ./log/app:/src/app/log
+      - ./src:/usr/local/src
+      - ./node_modules:/usr/local/node_modules
+      - ./log/app:/usr/local/log
     environment:
       APP_HOST: ${APP_HOST}
       APP_PORT: ${APP_PORT}
       APP_INFLIGHT: 10
       APP_DURATION: 1000
       APP_JITTER: 50
-      APP_METRICS_FILE: /src/app/log/metrics.log
+      APP_METRICS_FILE: /usr/local/log/metrics.log
       APP_METRICS_PERIOD: ${APP_METRICS_PERIOD_MS}
-    command: node /src/app/dist/server.js -q
+    command: node /usr/local/src/server.js -q
 
   lb:
     image: nginx
