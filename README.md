@@ -1,6 +1,6 @@
 # Adaptive Concurrency
 
-Using Nginx and Express.js to play with adaptive concurrency.
+Using Nginx and Node.js to play with adaptive concurrency.
 
 若需要知道緣起，請看相關[文章](https://evan361425.github.io/feedback/adaptive-concurrency/)。
 

@@ -24,7 +24,7 @@ services:
       APP_PORT: ${APP_PORT}
       APP_INFLIGHT: 10
       APP_DURATION: 1000
-      APP_JITTER: 50
+      APP_JITTER: 5
       APP_METRICS_FILE: /usr/local/log/metrics.log
       APP_METRICS_PERIOD: ${APP_METRICS_PERIOD_MS}
     command: node /usr/local/src/server.js -q

@@ -467,6 +467,34 @@
       },
       "targets": [
         {
+          "alias": "latency(10s)",
+          "bucketAggs": [
+            {
+              "field": "@timestamp",
+              "id": "2",
+              "settings": {
+                "interval": "10s"
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "P31C819B24CF3C3C7"
+          },
+          "hide": false,
+          "metrics": [
+            {
+              "field": "log.nginx.response_time",
+              "id": "1",
+              "type": "avg"
+            }
+          ],
+          "query": "log.nginx.status = 200",
+          "refId": "B",
+          "timeField": "@timestamp"
+        },
+        {
           "alias": "latency",
           "bucketAggs": [
             {
@@ -491,7 +519,7 @@
             }
           ],
           "query": "log.nginx.status = 200",
-          "refId": "B",
+          "refId": "A",
           "timeField": "@timestamp"
         }
       ],

@@ -64,10 +64,11 @@ function parseArgs() {
 
 function main() {
   const args = parseArgs();
+  const path = args.waitTime === 0 ? '' : '/' + args.waitTime;
   const httpOptions = {
     hostname: args.host,
     port: args.port,
-    path: args.path + '/' + args.waitTime,
+    path: args.path + path,
     timeout: args.timeout,
     method: 'GET',
     headers: {
