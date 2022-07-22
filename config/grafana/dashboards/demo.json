@@ -344,7 +344,7 @@
         {
           "id": "calculateField",
           "options": {
-            "alias": "200 (~10s)",
+            "alias": "200 (avg 10s)",
             "binary": {
               "left": "200 (10s)",
               "operator": "/",
@@ -361,7 +361,7 @@
         {
           "id": "calculateField",
           "options": {
-            "alias": "503 (~10s)",
+            "alias": "503 (avg 10s)",
             "binary": {
               "left": "503 (10s)",
               "operator": "/",
@@ -380,7 +380,7 @@
             "excludeByName": {
               "200 (10s)": true,
               "503 (10s)": true,
-              "503 (~10s)": false,
+              "503 (avg 10s)": false,
               "504 (10s)": true
             },
             "indexByName": {},
@@ -694,7 +694,7 @@
             {
               "id": "calculateField",
               "options": {
-                "alias": "200 (~10s)",
+                "alias": "200 (avg 10s)",
                 "binary": {
                   "left": "200 (10s)",
                   "operator": "/",
@@ -711,7 +711,7 @@
             {
               "id": "calculateField",
               "options": {
-                "alias": "503 (~10s)",
+                "alias": "503 (avg 10s)",
                 "binary": {
                   "left": "503 (10s)",
                   "operator": "/",
@@ -730,7 +730,7 @@
                 "excludeByName": {
                   "200 (10s)": true,
                   "503 (10s)": true,
-                  "503 (~10s)": false,
+                  "503 (avg 10s)": false,
                   "504 (10s)": true
                 },
                 "indexByName": {},
@@ -898,7 +898,7 @@
             {
               "id": "calculateField",
               "options": {
-                "alias": "200 (~10s)",
+                "alias": "200 (avg 10s)",
                 "binary": {
                   "left": "200 (10s)",
                   "operator": "/",
@@ -915,7 +915,7 @@
             {
               "id": "calculateField",
               "options": {
-                "alias": "503 (~10s)",
+                "alias": "503 (avg 10s)",
                 "binary": {
                   "left": "503 (10s)",
                   "operator": "/",
@@ -934,7 +934,7 @@
                 "excludeByName": {
                   "200 (10s)": true,
                   "503 (10s)": true,
-                  "503 (~10s)": false,
+                  "503 (avg 10s)": false,
                   "504 (10s)": true
                 },
                 "indexByName": {},
@@ -1116,7 +1116,7 @@
             {
               "id": "calculateField",
               "options": {
-                "alias": "200 (~10s)",
+                "alias": "200 (avg 10s)",
                 "binary": {
                   "left": "200 (10s)",
                   "operator": "/",
@@ -1133,7 +1133,7 @@
             {
               "id": "calculateField",
               "options": {
-                "alias": "503 (~10s)",
+                "alias": "503 (avg 10s)",
                 "binary": {
                   "left": "503 (10s)",
                   "operator": "/",
@@ -1152,7 +1152,7 @@
                 "excludeByName": {
                   "200 (10s)": true,
                   "503 (10s)": true,
-                  "503 (~10s)": false,
+                  "503 (avg 10s)": false,
                   "504 (10s)": true
                 },
                 "indexByName": {},
@@ -1320,7 +1320,7 @@
             {
               "id": "calculateField",
               "options": {
-                "alias": "200 (~10s)",
+                "alias": "200 (avg 10s)",
                 "binary": {
                   "left": "200 (10s)",
                   "operator": "/",
@@ -1337,7 +1337,7 @@
             {
               "id": "calculateField",
               "options": {
-                "alias": "503 (~10s)",
+                "alias": "503 (avg 10s)",
                 "binary": {
                   "left": "503 (10s)",
                   "operator": "/",
@@ -1356,7 +1356,7 @@
                 "excludeByName": {
                   "200 (10s)": true,
                   "503 (10s)": true,
-                  "503 (~10s)": false,
+                  "503 (avg 10s)": false,
                   "504 (10s)": true
                 },
                 "indexByName": {},

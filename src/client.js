@@ -7,7 +7,7 @@ const { request } = require('http');
  * @property {number} port
  * @property {string} path
  * @property {string} name
- * @property {number} waitTime
+ * @property {number} wait
  * @property {number} rate
  * @property {number} duration
  * @property {number} timeout
@@ -38,7 +38,7 @@ function parseArgs() {
     default: 'A',
     help: 'Client name, default: A',
   });
-  parser.add_argument('-w', '--waitTime', {
+  parser.add_argument('-w', '--wait', {
     default: 1000,
     type: 'int',
     help: 'How long(ms) will the request execute in server, default: 1000',
@@ -49,9 +49,9 @@ function parseArgs() {
     help: 'Requests per second rate, default: 10',
   });
   parser.add_argument('-d', '--duration', {
-    default: 15,
+    default: 120,
     type: 'int',
-    help: 'How many seconds you want to run, 0 means forever, default: 15',
+    help: 'How many seconds you want to run, 0 means forever, default: 120',
   });
   parser.add_argument('-t', '--timeout', {
     default: 30000,
@@ -64,7 +64,7 @@ function parseArgs() {
 
 function main() {
   const args = parseArgs();
-  const path = args.waitTime === 0 ? '' : '/' + args.waitTime;
+  const path = args.wait === 0 ? '' : '/' + args.wait;
   const httpOptions = {
     hostname: args.host,
     port: args.port,

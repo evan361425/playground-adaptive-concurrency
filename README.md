@@ -4,6 +4,12 @@ Using Nginx and Node.js to play with adaptive concurrency.
 
 若需要知道緣起，請看相關[文章](https://evan361425.github.io/feedback/adaptive-concurrency/)。
 
+## Architecture
+
+以下是這個 Demo 中的整體架構。
+
+![Architecture](architecture.png)
+
 ## Instrument
 
 你需要安裝
@@ -34,15 +40,15 @@ bash scripts/init.sh
 2. Do some client things
 
 ```shell
-node src/client.js -w 700 -r 15 -d 5 --port 8000
+node src/client.js --wait 700 --rate 15 --duration 5 --port 8000
 ```
 
 client 的參數有：
 
--   `-w/--waitTime`，每個請求等待多久，_預設 1 秒_
+-   `-w/--wait`，每個請求等待多久，若為 0 則使用 server 預設的等待時間，_預設 1 秒_
 -   `-r/--rate`，每秒幾個請求（使用不同的連線），_預設 10 個_
 -   `-n/--name`，這個 client 的名稱，_預設為 A_
--   `-d/--duration`，持續多久，0 代表一直持續，_預設 15 秒_
+-   `-d/--duration`，持續多久，0 代表一直持續，_預設 120 秒_
 -   `-t/--timeout`，_預設 30 秒_
 -   `--host`，_預設 localhost_
 -   `--port`，_預設 8080_
